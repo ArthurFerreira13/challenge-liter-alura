@@ -1,8 +1,9 @@
 package com.challenge.liter_alura;
 
 import com.challenge.liter_alura.dto.DadosResposta;
-import com.challenge.liter_alura.service.ConsumoApi;
-import com.challenge.liter_alura.service.ConverteDados;
+import com.challenge.liter_alura.service.LivroService;
+import util.ConsumoApi;
+import util.ConverteDados;
 
 import java.util.Scanner;
 
@@ -11,6 +12,11 @@ public class Principal {
     private ConsumoApi consumo = new ConsumoApi();
     private ConverteDados conversor = new ConverteDados();
     private final String ENDERECO = "https://gutendex.com/books/?search=";
+    private LivroService servico;
+
+    public Principal(LivroService service) {
+        this.servico = service;
+    }
 
     public void exibeMenu() {
         var opcao = -1;
@@ -43,8 +49,14 @@ public class Principal {
 
     private void buscarLivroWeb() {
         DadosResposta dados = getDadosLivro();
-        System.out.println(dados);
+        if (dados != null && !dados.livros().isEmpty()) {
+            // Enviamos o primeiro livro da lista para o Service tratar e salvar
+            servico.salvarLivro(dados.livros().get(0));
+        } else {
+            System.out.println("Livro não encontrado.");
+        }
     }
+
 
     private DadosResposta getDadosLivro() {
         System.out.println("Digite o nome do livro para busca:");
@@ -53,3 +65,4 @@ public class Principal {
         return conversor.converter(json, DadosResposta.class);
     }
 }
+
