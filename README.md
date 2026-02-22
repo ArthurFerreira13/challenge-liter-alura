@@ -27,6 +27,13 @@ Listar autores vivos em um determinado ano: Filtra autores que estavam vivos no 
 
 Listar livros em um determinado idioma: Filtra livros salvos por sigla de idioma (ex: en, pt, es).
 
+🌟 Funcionalidades Extras (Diferenciais)
+📊 Gerando Estatísticas: Exibe a média, o valor máximo, mínimo e a contagem de downloads de todos os livros no banco, utilizando a classe DoubleSummaryStatistics.
+
+🏆 Top 10 Livros: Uma consulta otimizada que retorna os 10 livros mais populares registrados no sistema.
+
+🔍 Busca de Autor por Nome: Busca específica no banco de dados para localizar informações de autores já cadastrados.
+
 🚀 Como Executar o Projeto
 Pré-requisitos
 JDK 17 ou superior.
