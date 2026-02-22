@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
+import java.util.DoubleSummaryStatistics;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class LivroService {
@@ -81,6 +83,43 @@ public class LivroService {
             System.out.println("Nenhum livro encontrado no idioma: " + idioma);
         } else {
             livros.forEach(System.out::println);
+        }
+    }
+
+    public void listarTop10LivrosMaisBaixados() {
+        System.out.println("\n--- TOP 10 LIVROS MAIS BAIXADOS ---");
+        List<Livro> top10 = livroRepository.findTop10ByOrderByNumeroDownloadsDesc();
+        top10.forEach(l ->
+                System.out.println(l.getTitulo() + " - Downloads: " + l.getNumeroDownloads()));
+    }
+
+    public void exibirEstatisticasDownloads() {
+        List<Livro> livros = livroRepository.findAll();
+        DoubleSummaryStatistics est = livros.stream()
+                .filter(l -> l.getNumeroDownloads() > 0)
+                .collect(Collectors.summarizingDouble(Livro::getNumeroDownloads));
+
+        System.out.println("\n--- ESTATÍSTICAS DE DOWNLOADS ---");
+        System.out.println("Média de downloads: " + String.format("%.2f", est.getAverage()));
+        System.out.println("Máximo de downloads: " + est.getMax());
+        System.out.println("Mínimo de downloads: " + est.getMin());
+        System.out.println("Quantidade de livros avaliados: " + est.getCount());
+    }
+
+    public void buscarAutorPorNome(String nomeAutor) {
+        var autorOpt = autorRepository.findByNomeContainingIgnoreCase(nomeAutor);
+        if (autorOpt.isPresent()) {
+            Autor autor = autorOpt.get();
+            System.out.println("\n--- AUTOR ENCONTRADO ---");
+            System.out.println(autor);
+            if (autor.getLivros().isEmpty()) {
+                System.out.println("Este autor não tem livros registrados.");
+            } else {
+                System.out.println("Livros deste autor:");
+                autor.getLivros().forEach(l -> System.out.println("- " + l.getTitulo()));
+            }
+        } else {
+            System.out.println("Nenhum autor encontrado com o nome: " + nomeAutor);
         }
     }
 }

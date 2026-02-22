@@ -27,6 +27,9 @@ public class Principal {
                     3 - Listar autores registrados
                     4 - Listar autores vivos em um determinado ano
                     5 - Listar livros em um determinado idioma
+                    6 - Top 10 livros mais baixados
+                    7 - Exibir estatísticas de downloads
+                    8 - Buscar autor por nome
                     0 - Sair
                     """;
 
@@ -55,6 +58,16 @@ public class Principal {
                     String idioma = leitura.nextLine();
                     servico.listarLivrosPorIdioma(idioma);
                     break;
+                case 6:
+                    servico.listarTop10LivrosMaisBaixados();
+                    break;
+                case 7:
+                    servico.exibirEstatisticasDownloads();
+                    break;
+                case 8:
+                    System.out.println("Digite o nome do autor para busca:");
+                    String nomeAutor = leitura.nextLine();
+                    servico.buscarAutorPorNome(nomeAutor);
                 case 0:
                     System.out.println("Saindo...");
                     break;
