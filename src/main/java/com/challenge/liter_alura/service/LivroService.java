@@ -8,6 +8,9 @@ import com.challenge.liter_alura.repository.LivroRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
+import java.util.List;
+
 @Service
 public class LivroService {
     @Autowired
@@ -16,9 +19,31 @@ public class LivroService {
     @Autowired
     private AutorRepository autorRepository;
 
+    public void listarAutoresRegistrados() {
+        List<Autor> autores = autorRepository.findAll();
+
+        if (autores.isEmpty()) {
+            System.out.println("Nenhum autor registrado ainda.");
+        } else {
+            System.out.println("\n--- AUTORES REGISTRADOS ---");
+            autores.forEach(a ->
+                    System.out.println("Autor: " + a.getNome() +
+                            " (" + a.getAnoNascimento() + " - " +
+                            (a.getAnoFalecimento() != null ? a.getAnoFalecimento() : "Presente") + ")")
+            );
+        }
+    }
+
+    public void listarLivrosRegistrados() {
+        List<Livro> livros = livroRepository.findAll();
+
+        livros.stream()
+                .sorted(Comparator.comparing(Livro::getTitulo))
+                .forEach(System.out::println);
+    }
+
     public void salvarLivro(DadosLivro dadosLivro) {
         try {
-            // 1. Verificar se o livro já existe pelo título para evitar duplicados
             if (livroRepository.findByTituloContainingIgnoreCase(dadosLivro.titulo()).isPresent()) {
                 System.out.println("Erro: Este livro já está cadastrado no banco de dados.");
                 return;
@@ -29,10 +54,8 @@ public class LivroService {
             Autor autor = autorRepository.findByNomeContainingIgnoreCase(dadosAutor.nome())
                     .orElseGet(() -> autorRepository.save(new Autor(dadosAutor)));
 
-            // 3. Criar e salvar o livro
             Livro livro = new Livro(dadosLivro);
             livro.setAutor(autor);
-
             livroRepository.save(livro);
             System.out.println("Livro salvo com sucesso: " + livro.getTitulo());
 
@@ -40,6 +63,24 @@ public class LivroService {
             System.err.println("Erro: A API não retornou informações de autor para este livro.");
         } catch (Exception e) {
             System.err.println("Erro inesperado ao salvar o livro: " + e.getMessage());
+        }
+    }
+
+    public void listarAutoresVivosEmAno(int ano) {
+        List<Autor> autores = autorRepository.buscarAutoresVivosNoAno(ano);
+        if (autores.isEmpty()) {
+            System.out.println("Nenhum autor encontrado vivo no ano de " + ano);
+        } else {
+            autores.forEach(System.out::println);
+        }
+    }
+
+    public void listarLivrosPorIdioma(String idioma) {
+        List<Livro> livros = livroRepository.findByIdiomaContainingIgnoreCase(idioma);
+        if (livros.isEmpty()) {
+            System.out.println("Nenhum livro encontrado no idioma: " + idioma);
+        } else {
+            livros.forEach(System.out::println);
         }
     }
 }

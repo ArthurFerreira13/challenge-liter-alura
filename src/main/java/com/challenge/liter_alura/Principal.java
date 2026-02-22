@@ -38,6 +38,23 @@ public class Principal {
                 case 1:
                     buscarLivroWeb();
                     break;
+                case 2:
+                    servico.listarLivrosRegistrados();
+                    break;
+                case 3:
+                    servico.listarAutoresRegistrados();
+                    break;
+                case 4:
+                    System.out.println("Digite o ano para listar autores vivos:");
+                    int ano = leitura.nextInt();
+                    leitura.nextLine();
+                    servico.listarAutoresVivosEmAno(ano);
+                    break;
+                case 5:
+                    System.out.println("Digite o idioma para listar livros ex: en, pt, es:");
+                    String idioma = leitura.nextLine();
+                    servico.listarLivrosPorIdioma(idioma);
+                    break;
                 case 0:
                     System.out.println("Saindo...");
                     break;
